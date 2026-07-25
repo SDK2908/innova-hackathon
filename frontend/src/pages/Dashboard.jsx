@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import LeakCard from "../components/LeakCard";
 import CategoryChart from "../components/CategoryChart";
 import AIFinanceTeam from "../components/AIFinanceTeam";
+import AIInsightCard from "../components/AIInsightCard";
+import DownloadReport from "../components/DownloadReport";
 import "../styles/dashboard.css";
 import { getDashboard } from "../services/api";
 
 function Dashboard() {
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [analysis, setAnalysis] = useState(null);
 
   useEffect(() => {
     const fetchDashboard = async () => {
@@ -15,16 +18,14 @@ function Dashboard() {
         const userId = localStorage.getItem("userId");
 
         if (!userId) {
-          console.error("User ID not found");
           setLoading(false);
           return;
         }
 
         const response = await getDashboard(userId);
-
         setDashboard(response);
       } catch (err) {
-        console.error("Failed to load dashboard:", err);
+        console.error("Dashboard Error:", err);
       } finally {
         setLoading(false);
       }
@@ -36,15 +37,19 @@ function Dashboard() {
   if (loading) {
     return (
       <div className="dashboard-container">
-        <h2>Loading dashboard...</h2>
+        <div className="loading-state">
+          <h2>Loading your subscription dashboard...</h2>
+        </div>
       </div>
     );
   }
 
-  if (!dashboard || !dashboard.success) {
+  if (!dashboard?.success) {
     return (
       <div className="dashboard-container">
-        <h2>Unable to load dashboard.</h2>
+        <div className="loading-state">
+          <h2>Unable to load dashboard.</h2>
+        </div>
       </div>
     );
   }
@@ -53,15 +58,15 @@ function Dashboard() {
   const leakScore = dashboard.leakScore || {};
 
   const monthlySpend = subscriptions.reduce(
-    (sum, item) => sum + (item.currentAmount || 0),
+    (sum, sub) => sum + (sub.currentAmount || 0),
     0
   );
 
   const categories = {};
 
   subscriptions.forEach((sub) => {
-    const category = sub.category || "Other";
-    categories[category] = (categories[category] || 0) + 1;
+    const key = sub.category || "Other";
+    categories[key] = (categories[key] || 0) + 1;
   });
 
   const chartData = Object.keys(categories).map((key) => ({
@@ -70,124 +75,292 @@ function Dashboard() {
   }));
 
   const priceHike = subscriptions.find(
-    (item) => item.priceHikePercent > 0
+    (sub) => sub.priceHikePercent > 0
   );
 
   return (
     <div className="dashboard-container">
 
-      <div className="dashboard-header">
-        <h1>Subscription Leak Dashboard</h1>
+      {/* ================= HERO ================= */}
 
-        <p>
-          Analyze your recurring payments and identify hidden subscription
-          leaks.
-        </p>
-      </div>
+      <section className="dashboard-header">
 
-      <div className="stats-container">
+        <div className="hero-content">
 
-        <div className="stat-card">
-          <h3>Total Subscriptions</h3>
-          <h2>{subscriptions.length}</h2>
-        </div>
+          <div>
 
-        <div className="stat-card">
-          <h3>Leak Score</h3>
-          <h2>{leakScore.score || 0}/100</h2>
-        </div>
+            <h1>💳 Subscription Leak Dashboard</h1>
 
-        <div className="stat-card">
-          <h3>Monthly Spend</h3>
-          <h2>${monthlySpend.toFixed(2)}</h2>
-        </div>
-
-        <div className="stat-card savings">
-          <h3>Potential Savings</h3>
-          <h2>${leakScore.yearlyWasteEstimate || 0}</h2>
-        </div>
-
-      </div>
-
-      {priceHike && (
-        <div className="price-alert">
-
-          <h2>🚨 Price Hike Detected</h2>
-
-          <div className="price-content">
-
-            <div>
-              <h3>{priceHike.merchantName}</h3>
-
-              <p>Previous Price</p>
-
-              <span>${priceHike.previousAmount}</span>
-            </div>
-
-            <div className="arrow">
-              ↑ {priceHike.priceHikePercent}%
-            </div>
-
-            <div>
-              <p>New Price</p>
-
-              <span className="new-price">
-                ${priceHike.currentAmount}
-              </span>
-            </div>
+            <p>
+              Detect hidden subscriptions, recurring payment leaks,
+              silent price hikes and discover opportunities to reduce
+              unnecessary recurring expenses.
+            </p>
 
           </div>
 
         </div>
-      )}
 
-      {chartData.length > 0 && (
-        <CategoryChart data={chartData} />
-      )}
+      </section>
 
-      <div className="leaks-section">
+      {/* ================= STATS ================= */}
 
-        <h2>Detected Subscription Leaks</h2>
+      <section className="stats-container">
 
-        <div className="leak-container">
+        <div className="stat-card">
 
-          {subscriptions.length === 0 ? (
-            <p>No subscriptions detected.</p>
-          ) : (
-            subscriptions.map((sub) => (
-              <LeakCard
-                key={sub._id}
-                leak={{
-                  id: sub._id,
-                  title: sub.merchantName,
-                  amount: sub.currentAmount,
-                  category: sub.category,
+          <span>Total Subscriptions</span>
 
-                  severity:
-                    sub.priceHikePercent > 0
-                      ? "High"
-                      : sub.isTrialTrap
-                      ? "Medium"
-                      : "Low",
-
-                  description:
-                    sub.priceHikePercent > 0
-                      ? `Price increased by ${sub.priceHikePercent}%`
-                      : "Recurring subscription",
-                }}
-              />
-            ))
-          )}
+          <h2>{subscriptions.length}</h2>
 
         </div>
 
-      </div>
+        <div className="stat-card">
 
-      {/* ==========================
-          AI Finance Team
-      ========================== */}
+          <span>Leak Score</span>
 
-      <AIFinanceTeam />
+          <h2>{leakScore.score || 82}/100</h2>
+
+        </div>
+
+        <div className="stat-card">
+
+          <span>Monthly Spend</span>
+
+          <h2>${monthlySpend.toFixed(2)}</h2>
+
+        </div>
+
+        <div className="stat-card savings">
+
+          <span>Potential Savings</span>
+
+          <h2>${leakScore.yearlyWasteEstimate || 0}</h2>
+
+        </div>
+
+      </section>
+
+      {/* ================= PRICE ALERT ================= */}
+
+      {priceHike && (
+
+        <section className="price-alert">
+
+          <div className="price-alert-header">
+
+            <h2>🚨 Silent Price Hike Detected</h2>
+
+            <p>
+              One of your recurring subscriptions has increased
+              without requiring any action from you.
+            </p>
+
+          </div>
+
+          <div className="price-content">
+
+            <div className="price-box">
+
+              <h4>{priceHike.merchantName}</h4>
+
+              <small>Previous Price</small>
+
+              <h2>${priceHike.previousAmount}</h2>
+
+            </div>
+
+            <div className="arrow">
+
+              ↑ {priceHike.priceHikePercent}%
+
+            </div>
+
+            <div className="price-box">
+
+              <small>Current Price</small>
+
+              <h2 className="new-price">
+
+                ${priceHike.currentAmount}
+
+              </h2>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      )}
+
+      {/* ================= CATEGORY CHART ================= */}
+
+      {chartData.length > 0 && (
+
+        <section className="chart-section">
+
+          <CategoryChart data={chartData} />
+
+        </section>
+
+      )}
+
+      {/* ================= SUBSCRIPTIONS ================= */}
+
+      <section className="leaks-section">
+
+        <div className="section-title">
+
+          <h2>Detected Subscriptions</h2>
+
+          <p>
+            Review all recurring payments detected from your uploaded
+            transactions.
+          </p>
+
+        </div>
+
+        <div className="leak-container">
+
+          {subscriptions.map((sub) => (
+
+            <LeakCard
+              key={sub._id}
+              leak={{
+                id: sub._id,
+                title: sub.merchantName,
+                amount: sub.currentAmount,
+                previousAmount: sub.previousAmount,
+                category: sub.category,
+                score: leakScore.score || 82,
+
+                severity:
+                  sub.priceHikePercent > 0
+                    ? "High"
+                    : sub.isTrialTrap
+                    ? "Medium"
+                    : "Low",
+
+                description:
+                  sub.priceHikePercent > 0
+                    ? `Price increased by ${sub.priceHikePercent}%`
+                    : "Recurring subscription",
+              }}
+            />
+
+          ))}
+
+        </div>
+
+      </section>
+
+      {/* ================= AI ANALYSIS ================= */}
+
+      <AIFinanceTeam
+        onAnalysisComplete={setAnalysis}
+      />
+            {/* ================= AI RESULTS ================= */}
+
+      {analysis?.report && (
+
+        <section className="analysis-section">
+
+          <div className="analysis-header">
+
+            <h2>🤖 SubscriptionIQ AI Analysis</h2>
+
+            <p>
+              Your complete subscription portfolio has been analyzed by AI.
+              Review the overall health, key risks, and personalized
+              recommendations below.
+            </p>
+
+          </div>
+
+          {/* Summary Cards */}
+
+          <div className="analysis-summary">
+
+            <div className="summary-card">
+
+              <span className="summary-label">
+                Portfolio Health
+              </span>
+
+<h2>
+  {analysis.report.overallPortfolioHealth
+    ?.split(".")[0]
+    .replace(/\.$/, "")}
+</h2>
+
+            </div>
+
+            <div className="summary-card">
+
+              <span className="summary-label">
+                Active Subscriptions
+              </span>
+
+              <h2>
+                {analysis.report.subscriptionCount}
+              </h2>
+
+            </div>
+
+            <div className="summary-card">
+
+              <span className="summary-label">
+                Monthly Spend
+              </span>
+
+              <h2>
+                ${analysis.report.monthlySpend}
+              </h2>
+
+            </div>
+
+            <div className="summary-card">
+
+              <span className="summary-label">
+                Estimated Savings
+              </span>
+
+              <h2>
+                ${analysis.report.estimatedYearlySavings}
+              </h2>
+
+            </div>
+
+          </div>
+
+          {/* Detailed AI Report */}
+
+          <AIInsightCard
+            item={analysis.report}
+          />
+
+          {/* Download */}
+
+          <div className="download-wrapper">
+
+            <DownloadReport
+              dashboardData={{
+                monthlySpend,
+                potentialSavings:
+                  leakScore.yearlyWasteEstimate || 0,
+                activeSubscriptions: subscriptions.length,
+                leakScore: leakScore.score || 82,
+              }}
+              leaks={subscriptions}
+              analysis={analysis}
+            />
+
+          </div>
+
+        </section>
+
+      )}
 
     </div>
   );

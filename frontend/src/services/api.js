@@ -22,7 +22,7 @@ export async function uploadCSV(file, userId) {
 }
 
 /**
- * Get dashboard data
+ * Dashboard Data
  */
 export async function getDashboard(userId) {
   const response = await fetch(
@@ -37,26 +37,20 @@ export async function getDashboard(userId) {
 }
 
 /**
- * Run AI Agent
+ * Analyze Portfolio using SubscriptionIQ AI
  */
-export async function runAgent(agent, message = "") {
-  const userId = localStorage.getItem("userId");
-
-  const response = await fetch(`${API_BASE}/ai/run`, {
+export async function analyzePortfolio(userId) {
+  const response = await fetch(`${API_BASE}/ai/analyze`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      agent,
-      userId,
-      message,
-    }),
+    body: JSON.stringify({ userId }),
   });
 
   if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(errorText || "Failed to run AI agent");
+    const error = await response.text();
+    throw new Error(error || "Failed to analyze portfolio");
   }
 
   return response.json();

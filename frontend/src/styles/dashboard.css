@@ -376,3 +376,289 @@
     cursor:pointer;
 
 }
+/* ==========================================
+   RESOLVE MODAL
+========================================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+
+.resolve-modal {
+  width: 720px;
+  max-width: 95%;
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 30px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .25);
+  animation: popup .25s ease;
+}
+
+@keyframes popup {
+  from {
+    transform: translateY(20px) scale(.96);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.resolve-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.resolve-header h2 {
+  color: #1e3a8a;
+  margin-bottom: 6px;
+}
+
+.resolve-header p {
+  color: #64748b;
+}
+
+.close-btn {
+  border: none;
+  background: #ef4444;
+  color: white;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.close-btn:hover {
+  background: #dc2626;
+}
+
+.resolve-price {
+  margin: 30px 0;
+  text-align: center;
+}
+
+.resolve-price h3 {
+  color: #64748b;
+  margin-bottom: 8px;
+}
+
+.resolve-price h1 {
+  color: #16a34a;
+  font-size: 46px;
+}
+
+.resolve-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.resolve-tabs button {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #e2e8f0;
+  font-weight: 600;
+  transition: .2s;
+}
+
+.resolve-tabs button:hover {
+  background: #cbd5e1;
+}
+
+.resolve-tabs .active-tab {
+  background: #2563eb;
+  color: white;
+}
+
+.resolve-content textarea {
+  width: 100%;
+  min-height: 220px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 16px;
+  resize: none;
+  font-size: 15px;
+  font-family: inherit;
+  margin-top: 15px;
+}
+
+.action-btn {
+  margin-top: 20px;
+  padding: 13px 24px;
+  border: none;
+  background: #16a34a;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.action-btn:hover {
+  background: #15803d;
+}
+
+.leak-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.detail-btn,
+.resolve-btn {
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: 0.25s ease;
+}
+
+.detail-btn {
+  background: #2563eb;
+  color: white;
+}
+
+.detail-btn:hover {
+  background: #1d4ed8;
+}
+
+.resolve-btn {
+  background: #16a34a;
+  color: white;
+}
+
+.resolve-btn:hover {
+  background: #15803d;
+}
+
+.full-width {
+  width: 100%;
+}
+
+
+.ai-preview {
+  color: #475569;
+  line-height: 1.7;
+  margin-top: 12px;
+}
+
+.ai-details {
+  margin-top: 18px;
+}
+
+.ai-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.ai-full-text {
+  margin-top: 12px;
+  padding: 15px;
+  background: #f8fafc;
+  border-radius: 10px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  color: #334155;
+}
+
+/* ==========================================
+   SUBSCRIPTION IQ AI ANALYSIS
+========================================== */
+
+.analysis-section {
+  margin-top: 50px;
+}
+
+.analysis-title {
+  margin-bottom: 25px;
+}
+
+.analysis-title h2 {
+  color: #1e293b;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.analysis-title p {
+  color: #64748b;
+  font-size: 16px;
+}
+
+/* Summary Cards */
+
+.analysis-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 22px;
+  margin: 30px 0;
+}
+
+.summary-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e2e8f0;
+  transition: all 0.25s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 35px rgba(15, 23, 42, 0.12);
+}
+
+.summary-card h3 {
+  color: #64748b;
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.summary-card h2 {
+  color: #2563eb;
+  font-size: 30px;
+  margin: 0;
+  font-weight: 700;
+}
+
+/* Download Report */
+
+.analysis-section .download-wrapper,
+.analysis-section > div:last-child {
+  display: flex;
+  justify-content: center;
+  margin-top: 35px;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .analysis-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .analysis-summary {
+    grid-template-columns: 1fr;
+  }
+}

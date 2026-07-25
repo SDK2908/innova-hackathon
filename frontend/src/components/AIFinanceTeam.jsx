@@ -1,104 +1,151 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "../styles/aiFinanceTeam.css";
-import { runAgent } from "../services/api";
+import { analyzePortfolio } from "../services/api";
 
-const agents = [
-  {
-    key: "forensics",
-    icon: "🕵️",
-    title: "Financial Forensics",
-    description: "Detects and verifies subscription issues.",
-  },
-  {
-    key: "recovery",
-    icon: "📈",
-    title: "Recovery Strategist",
-    description: "Prioritizes financial recovery actions.",
-  },
-  {
-    key: "intelligence",
-    icon: "🧠",
-    title: "Subscription Intelligence",
-    description: "Analyzes subscription portfolio overlaps.",
-  },
-  {
-    key: "simulator",
-    icon: "🔮",
-    title: "Future Simulator",
-    description: "Projects financial outcomes for different scenarios.",
-  },
-  {
-    key: "resolution",
-    icon: "🤝",
-    title: "Resolution Assistant",
-    description: "Prepares customer communication drafts.",
-  },
-  {
-    key: "executive",
-    icon: "🎯",
-    title: "Executive Report",
-    description: "Combines all AI outputs into one executive summary.",
-  },
-];
+function AIFinanceTeam({ onAnalysisComplete }) {
+  const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState("");
 
-function AIFinanceTeam() {
-  const navigate = useNavigate();
+  const runAnalysis = async () => {
+    const userId = localStorage.getItem("userId");
 
-  const [loadingAgent, setLoadingAgent] = useState("");
+    if (!userId) {
+      alert("User not found.");
+      return;
+    }
 
-  const handleRunAgent = async (agent) => {
+    setLoading(true);
+
+    const steps = [
+      "Reading your subscription portfolio...",
+      "Detecting recurring payment leaks...",
+      "Checking for silent price hikes...",
+      "Estimating potential savings...",
+      "Generating personalized recommendations...",
+      "Preparing executive financial report...",
+    ];
+
+    let currentStep = 0;
+
+    setStep(steps[0]);
+
+    const interval = setInterval(() => {
+      currentStep++;
+
+      if (currentStep < steps.length) {
+        setStep(steps[currentStep]);
+      }
+    }, 700);
+
     try {
-      setLoadingAgent(agent.key);
+      const response = await analyzePortfolio(userId);
 
-      const response = await runAgent(
-        agent.key,
-        "Analyze the uploaded subscription data and generate your report."
-      );
+      clearInterval(interval);
 
-      navigate("/agent-result", {
-        state: {
-          agentName: agent.title,
-          result: response.result.response,
-        },
-      });
+      setStep("Analysis completed successfully.");
+
+      if (onAnalysisComplete) {
+        onAnalysisComplete(response);
+      }
     } catch (err) {
+      clearInterval(interval);
       console.error(err);
-      alert("Unable to run AI Agent.");
+      alert("Unable to analyze subscriptions.");
     } finally {
-      setLoadingAgent("");
+      setLoading(false);
     }
   };
 
   return (
     <div className="ai-team-section">
-      <h2>🤖 AI Finance Team</h2>
 
-      <p>
-        Our specialized AI agents collaborate to analyze your subscriptions,
-        identify savings opportunities, and generate a complete recovery plan.
-      </p>
+      <div className="ai-main-card">
 
-      <div className="agent-grid">
-        {agents.map((agent) => (
-          <div key={agent.key} className="agent-card">
-            <div className="agent-icon">{agent.icon}</div>
+        <div className="ai-header">
 
-            <h3>{agent.title}</h3>
-
-            <p>{agent.description}</p>
-
-            <button
-              onClick={() => handleRunAgent(agent)}
-              disabled={loadingAgent === agent.key}
-            >
-              {loadingAgent === agent.key
-                ? "Running..."
-                : "Run Agent"}
-            </button>
+          <div className="ai-logo">
+            🤖
           </div>
-        ))}
+
+          <div>
+
+            <h2>SubscriptionIQ AI</h2>
+
+            <p>
+              Your intelligent subscription advisor powered by a
+              multi-layered AI engine.
+            </p>
+
+          </div>
+
+        </div>
+
+        <div className="ai-info">
+
+          <h3>What will be analyzed?</h3>
+
+          <div className="ai-feature-grid">
+
+            <div className="feature-card">
+              💳
+              <span>Recurring Payments</span>
+            </div>
+
+            <div className="feature-card">
+              📈
+              <span>Price Hikes</span>
+            </div>
+
+            <div className="feature-card">
+              🔍
+              <span>Hidden Subscriptions</span>
+            </div>
+
+            <div className="feature-card">
+              💰
+              <span>Potential Savings</span>
+            </div>
+
+            <div className="feature-card">
+              📊
+              <span>Spending Patterns</span>
+            </div>
+
+            <div className="feature-card">
+              📄
+              <span>Executive Report</span>
+            </div>
+
+          </div>
+
+        </div>
+
+        {loading && (
+
+          <div className="analysis-progress">
+
+            <div className="loader"></div>
+
+            <h3>Analyzing Portfolio...</h3>
+
+            <p>{step}</p>
+
+          </div>
+
+        )}
+
+        <button
+          className="analyze-btn"
+          disabled={loading}
+          onClick={runAnalysis}
+        >
+          {loading
+            ? "Analyzing..."
+            : "Analyze Portfolio"}
+        </button>
+
       </div>
+
     </div>
   );
 }

@@ -34,3 +34,29 @@
 .nav-links a:hover{
     color:#FACC15;
 }
+
+.ai-preview {
+  color: #475569;
+  line-height: 1.7;
+  margin-top: 12px;
+}
+
+.ai-details {
+  margin-top: 18px;
+}
+
+.ai-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.ai-full-text {
+  margin-top: 12px;
+  padding: 15px;
+  background: #f8fafc;
+  border-radius: 10px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  color: #334155;
+}

@@ -1,0 +1,142 @@
+/* =====================================================
+   SUBSCRIPTION IQ AI REPORT
+===================================================== */
+
+.ai-insight-card {
+  margin-top: 30px;
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 35px;
+  box-shadow: 0 15px 40px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e2e8f0;
+}
+
+.ai-insight-card h2 {
+  margin-bottom: 28px;
+  color: #0f172a;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+/* ==========================================
+   Executive Summary
+========================================== */
+
+.summary-section {
+  background: #f8fafc;
+  padding: 22px;
+  border-radius: 16px;
+  margin-bottom: 25px;
+}
+
+.summary-section h3 {
+  margin-bottom: 12px;
+  color: #1e3a8a;
+}
+
+.summary-section p {
+  line-height: 1.8;
+  color: #475569;
+}
+
+/* ==========================================
+   Portfolio Health
+========================================== */
+
+.health-section {
+  margin-bottom: 30px;
+}
+
+.health-section h3 {
+  margin-bottom: 15px;
+  color: #1e293b;
+}
+
+.health-badge {
+  display: inline-block;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+  box-shadow: 0 8px 20px rgba(34, 197, 94, .25);
+}
+
+/* ==========================================
+   Issues & Recommendations
+========================================== */
+
+.ai-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.issues-section,
+.recommendations-section {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 22px;
+}
+
+.issues-section h3 {
+  color: #dc2626;
+  margin-bottom: 15px;
+}
+
+.recommendations-section h3 {
+  color: #16a34a;
+  margin-bottom: 15px;
+}
+
+.issues-section ul,
+.recommendations-section ul {
+  padding-left: 20px;
+}
+
+.issues-section li,
+.recommendations-section li {
+  margin-bottom: 12px;
+  line-height: 1.7;
+  color: #475569;
+}
+
+/* ==========================================
+   Final Recommendation
+========================================== */
+
+.final-section {
+  margin-top: 10px;
+  background: linear-gradient(135deg,#2563eb,#7c3aed);
+  color: white;
+  padding: 28px;
+  border-radius: 18px;
+}
+
+.final-section h3 {
+  margin-bottom: 15px;
+  color: white;
+}
+
+.final-section p {
+  line-height: 1.8;
+  color: rgba(255,255,255,.95);
+}
+
+/* ==========================================
+   Responsive
+========================================== */
+
+@media (max-width:900px){
+
+.ai-grid{
+grid-template-columns:1fr;
+}
+
+.ai-insight-card{
+padding:25px;
+}
+
+}
