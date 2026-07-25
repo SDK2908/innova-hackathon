@@ -40,60 +40,99 @@ const uploadTransactions = async (req, res) => {
 
     fs.createReadStream(req.file.path)
       .pipe(csv())
+
       .on("data", (row) => {
-        const merchant =
-          row.rawMerchant ||
-          row.merchant ||
-          row.description ||
-          row.payee ||
-          "Unknown";
+        try {
+          const merchant =
+            row.rawMerchant ||
+            row.merchant ||
+            row.description ||
+            row.payee ||
+            "Unknown";
 
-        const amount = parseFloat(
-          String(row.amount || "").replace(/[^0-9.-]/g, "")
-        );
+          const amount = parseFloat(
+            String(row.amount || "").replace(/[^0-9.-]/g, "")
+          );
 
-        if (isNaN(amount)) return;
+          if (isNaN(amount)) return;
 
-        transactions.push({
-          userId,
-          rawMerchant: merchant,
-          normalizedMerchant: normalizeMerchant(merchant),
-          amount,
-          currency: row.currency || "USD",
-          date: new Date(row.date),
-          category: row.category || "Unknown",
-          source: row.source || "csv",
-        });
+          const transactionDate = new Date(row.date);
+
+          if (isNaN(transactionDate.getTime())) {
+            console.warn("Skipping row with invalid date:", row);
+            return;
+          }
+
+          transactions.push({
+            userId,
+            rawMerchant: merchant,
+            normalizedMerchant: normalizeMerchant(merchant),
+            amount,
+            currency: row.currency || "USD",
+            date: transactionDate,
+            category: row.category || "Unknown",
+            source: row.source || "csv",
+          });
+        } catch (err) {
+          console.error("Error parsing CSV row:", err);
+        }
       })
+
       .on("end", async () => {
         try {
-          // Delete previous data for this user
+          console.log("========== CSV PARSED ==========");
+          console.log("Transactions Found:", transactions.length);
+
+          if (transactions.length === 0) {
+            throw new Error(
+              "No valid transactions found in uploaded CSV."
+            );
+          }
+
+          console.log("Deleting old records...");
+
           await Transaction.deleteMany({ userId });
           await Subscription.deleteMany({ userId });
           await LeakScore.deleteMany({ userId });
 
-          // Save uploaded transactions
+          console.log("Saving transactions...");
+
           const savedTransactions = await Transaction.insertMany(
             transactions
           );
 
-          // Group transactions
+          console.log(
+            "Transactions Saved:",
+            savedTransactions.length
+          );
+
+          console.log("Grouping transactions...");
+
           const grouped = groupTransactions(savedTransactions);
 
-          // Build subscriptions
+          console.log("Building subscriptions...");
+
           const subscriptions = await buildSubscriptions(
             userId,
             grouped
           );
 
-          // Calculate leak score
+          console.log(
+            "Subscriptions Created:",
+            subscriptions.length
+          );
+
+          console.log("Calculating leak score...");
+
           const leakScore = await calculateLeakScore(
             userId,
             subscriptions
           );
 
-          // Delete uploaded CSV
-          if (fs.existsSync(req.file.path)) {
+          console.log("Leak Score Generated");
+          console.log("==============================");
+
+          if (req.file && fs.existsSync(req.file.path)) {
             fs.unlinkSync(req.file.path);
           }
 
@@ -106,7 +145,10 @@ const uploadTransactions = async (req, res) => {
             userId,
           });
         } catch (err) {
+          console.error("========== PROCESS ERROR ==========");
           console.error(err);
+          console.error(err.stack);
+          console.error("===================================");
 
           if (req.file && fs.existsSync(req.file.path)) {
             fs.unlinkSync(req.file.path);
@@ -118,9 +160,27 @@ const uploadTransactions = async (req, res) => {
             error: err.message,
           });
         }
+      })
+
+      .on("error", (err) => {
+        console.error("CSV Read Error:", err);
+
+        if (req.file && fs.existsSync(req.file.path)) {
+          fs.unlinkSync(req.file.path);
+        }
+
+        return res.status(500).json({
+          success: false,
+          message: "Error reading CSV file.",
+          error: err.message,
+        });
       });
-  } catch (error) {
-    console.error(error);
+
+  } catch (err) {
+    console.error("========== SERVER ERROR ==========");
+    console.error(err);
+    console.error(err.stack);
+    console.error("==================================");
 
     if (req.file && fs.existsSync(req.file.path)) {
       fs.unlinkSync(req.file.path);
@@ -129,7 +189,7 @@ const uploadTransactions = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
-      error: error.message,
+      error: err.message,
     });
   }
 };
