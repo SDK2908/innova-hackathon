@@ -3,19 +3,13 @@ const { v4: uuid } = require("uuid");
 
 const lyzr = require("../config/lyzr");
 
-async function runLyzrAgent(agent, userId, prompt) {
-  const agentId = lyzr.agents[agent];
-
-  if (!agentId) {
-    throw new Error(`Invalid agent: ${agent}`);
-  }
-
+async function runLyzrAgent(userId, prompt) {
   try {
     const response = await axios.post(
       lyzr.endpoint,
       {
         user_id: userId,
-        agent_id: agentId,
+        agent_id: lyzr.agents.master,
         session_id: uuid(),
         message: prompt,
       },
@@ -24,12 +18,13 @@ async function runLyzrAgent(agent, userId, prompt) {
           "Content-Type": "application/json",
           "x-api-key": lyzr.apiKey,
         },
+        timeout: 60000,
       }
     );
 
     return response.data;
   } catch (error) {
-    console.error("Lyzr API Error:");
+    console.error("Lyzr API Error");
 
     if (error.response) {
       console.error(error.response.data);
@@ -40,7 +35,9 @@ async function runLyzrAgent(agent, userId, prompt) {
       );
     }
 
-    throw new Error(error.message || "Unable to connect to Lyzr API.");
+    throw new Error(
+      error.message || "Unable to connect to Lyzr API."
+    );
   }
 }
 

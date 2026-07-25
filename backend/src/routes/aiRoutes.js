@@ -2,9 +2,11 @@ const express = require("express");
 
 const router = express.Router();
 
-const { runAgent } = require("../controllers/aiController");
+const {
+  analyzePortfolio,
+} = require("../controllers/aiController");
 
-// POST /api/ai/run
-router.post("/run", runAgent);
+// Analyze subscription portfolio
+router.post("/analyze", analyzePortfolio);
 
 module.exports = router;

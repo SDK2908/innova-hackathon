@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5001/api";
+const API_BASE = "https://innova-hackathon-tech-nova.onrender.com/api";
 
 /**
  * Upload CSV
@@ -15,7 +15,8 @@ export async function uploadCSV(file, userId) {
   });
 
   if (!response.ok) {
-    throw new Error("Failed to upload CSV");
+    const error = await response.text();
+    throw new Error(error || "Failed to upload CSV");
   }
 
   return response.json();
@@ -30,14 +31,15 @@ export async function getDashboard(userId) {
   );
 
   if (!response.ok) {
-    throw new Error("Failed to fetch dashboard");
+    const error = await response.text();
+    throw new Error(error || "Failed to fetch dashboard");
   }
 
   return response.json();
 }
 
 /**
- * Analyze Portfolio using SubscriptionIQ AI
+ * Analyze Portfolio using AI
  */
 export async function analyzePortfolio(userId) {
   const response = await fetch(`${API_BASE}/ai/analyze`, {
@@ -48,10 +50,14 @@ export async function analyzePortfolio(userId) {
     body: JSON.stringify({ userId }),
   });
 
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(error || "Failed to analyze portfolio");
-  }
+ if (!response.ok) {
+  const error = await response.json().catch(() => null);
+  throw new Error(
+    error?.error ||
+    error?.message ||
+    "Failed to upload CSV"
+  );
+}
 
   return response.json();
 }

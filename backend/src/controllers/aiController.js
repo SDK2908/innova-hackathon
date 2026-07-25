@@ -2,52 +2,58 @@ const Subscription = require("../models/Subscription");
 const buildPrompt = require("../utils/promptBuilder");
 const { runLyzrAgent } = require("../services/lyzrService");
 
-const validAgents = [
-  "forensics",
-  "recovery",
-  "intelligence",
-  "simulator",
-  "resolution",
-  "executive",
-];
+// ======================================
+// Analyze Portfolio (Single AI Agent)
+// ======================================
 
-exports.runAgent = async (req, res) => {
+exports.analyzePortfolio = async (req, res) => {
   try {
-    const { agent, userId } = req.body;
+    const { userId } = req.body;
 
-    if (!agent || !userId) {
+    if (!userId) {
       return res.status(400).json({
         success: false,
-        message: "agent and userId are required.",
+        message: "userId is required.",
       });
     }
 
-    if (!validAgents.includes(agent)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid agent.",
-      });
-    }
-
-    // Fetch subscriptions for the user
     const subscriptions = await Subscription.find({
       userId,
       status: "active",
     }).sort({ merchantName: 1 });
 
-    // Build prompt from database data
-    const prompt = buildPrompt(agent, subscriptions);
+    if (!subscriptions.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No active subscriptions found.",
+      });
+    }
 
-    // Call Lyzr
-    const result = await runLyzrAgent(agent, userId, prompt);
+    // Build one prompt
+    const prompt = buildPrompt(subscriptions);
+
+    // One AI call
+    const response = await runLyzrAgent(userId, prompt);
+
+    // Lyzr may return JSON directly or as a string
+    let report = response.response || response.message || response;
+
+    if (typeof report === "string") {
+      try {
+        report = JSON.parse(report);
+      } catch (e) {
+        // Keep the original string if parsing fails
+      }
+    }
 
     return res.json({
       success: true,
       subscriptionsAnalyzed: subscriptions.length,
-      result,
+      report,
     });
+
   } catch (error) {
-    console.error("AI Controller Error:", error);
+    console.error(error);
 
     return res.status(500).json({
       success: false,

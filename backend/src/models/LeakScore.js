@@ -2,11 +2,10 @@ const mongoose = require("mongoose");
 
 const leakScoreSchema = new mongoose.Schema(
   {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
+userId: {
+  type: String,
+  required: true,
+},
 
     score: {
       type: Number,
