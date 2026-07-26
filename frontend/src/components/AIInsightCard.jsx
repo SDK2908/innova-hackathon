@@ -8,28 +8,38 @@ function AIInsightCard({ item }) {
 
       <h2>🤖 SubscriptionIQ AI Report</h2>
 
+      {/* Executive Summary */}
       <div className="summary-section">
         <h3>Executive Summary</h3>
-        <p>{item.executiveSummary}</p>
+        <p>{item.executiveSummary || "No summary available."}</p>
       </div>
 
+      {/* Portfolio Health */}
       <div className="health-section">
         <h3>Portfolio Health</h3>
 
         <span className="health-badge">
-          {item.overallPortfolioHealth}
+          {item.overallPortfolioHealth || "Unknown"}
         </span>
       </div>
 
       <div className="ai-grid">
 
+        {/* Top Issues */}
         <div className="issues-section">
           <h3>⚠ Top Issues</h3>
 
-          {item.topIssues?.length ? (
+          {item.topIssues && item.topIssues.length > 0 ? (
             <ul>
               {item.topIssues.map((issue, index) => (
-                <li key={index}>{issue}</li>
+                <li key={index}>
+                  {typeof issue === "string"
+                    ? issue
+                    : issue.issue ||
+                      issue.title ||
+                      issue.description ||
+                      JSON.stringify(issue)}
+                </li>
               ))}
             </ul>
           ) : (
@@ -37,13 +47,30 @@ function AIInsightCard({ item }) {
           )}
         </div>
 
+        {/* Recommendations */}
         <div className="recommendations-section">
           <h3>✅ Recommendations</h3>
 
-          {item.recommendations?.length ? (
+          {item.recommendations && item.recommendations.length > 0 ? (
             <ul>
               {item.recommendations.map((rec, index) => (
-                <li key={index}>{rec}</li>
+                <li key={index}>
+                  {typeof rec === "string" ? (
+                    rec
+                  ) : (
+                    <>
+                      <strong>{rec.action}</strong>
+
+                      {rec.estimatedYearlySavings !== undefined && (
+                        <>
+                          <br />
+                          💰 Estimated Yearly Savings: $
+                          {rec.estimatedYearlySavings}
+                        </>
+                      )}
+                    </>
+                  )}
+                </li>
               ))}
             </ul>
           ) : (
@@ -53,9 +80,10 @@ function AIInsightCard({ item }) {
 
       </div>
 
+      {/* Final Recommendation */}
       <div className="final-section">
         <h3>🎯 Final Recommendation</h3>
-        <p>{item.finalRecommendation}</p>
+        <p>{item.finalRecommendation || "No recommendation available."}</p>
       </div>
 
     </div>
