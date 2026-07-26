@@ -22,35 +22,56 @@ You are SubscriptionIQ AI.
 
 Analyze the following subscription portfolio.
 
-Return ONLY valid JSON matching the schema configured for your Lyzr Agent.
+Return ONLY valid JSON.
 
-Do not return Markdown.
+Do NOT return Markdown.
 
-Do not return explanations.
+Do NOT return explanations.
 
-Do not wrap the response inside code blocks.
+Do NOT wrap the response inside code blocks.
+
+The response MUST exactly follow this schema:
+
+{
+  "overallPortfolioHealth": "string",
+  "subscriptionCount": number,
+  "monthlySpend": number,
+  "estimatedYearlySavings": number,
+  "priceHikesDetected": number,
+  "executiveSummary": "string",
+  "topIssues": [
+    "string"
+  ],
+  "recommendations": [
+    {
+      "action": "string",
+      "estimatedYearlySavings": number
+    }
+  ],
+  "finalRecommendation": "string"
+}
+
+Use these rules:
+
+• overallPortfolioHealth should be a SHORT status like:
+  "Excellent"
+  "Good"
+  "Moderate Risk"
+  "High Risk"
+
+NOT a paragraph.
+
+• executiveSummary should be one concise paragraph.
+
+• topIssues should contain only the major problems.
+
+• recommendations should contain practical actions with yearly savings.
+
+• finalRecommendation should be ONE concise sentence summarizing the best overall action.
 
 Here is the subscription portfolio:
 
 ${subscriptionList}
-
-Analyze:
-
-• Overall portfolio health
-
-• Monthly spend
-
-• Estimated yearly savings
-
-• Number of subscriptions
-
-• Number of detected price hikes
-
-• Top issues
-
-• Actionable recommendations
-
-• Executive summary
 `;
 }
 

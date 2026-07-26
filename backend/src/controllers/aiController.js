@@ -36,15 +36,30 @@ exports.analyzePortfolio = async (req, res) => {
     const response = await runLyzrAgent(userId, prompt);
 
     // Lyzr may return JSON directly or as a string
-    let report = response.response || response.message || response;
+ let report = response.response || response.message || response;
 
-    if (typeof report === "string") {
-      try {
-        report = JSON.parse(report);
-      } catch (e) {
-        // Keep the original string if parsing fails
-      }
-    }
+if (typeof report === "string") {
+  try {
+    report = JSON.parse(report);
+  } catch (e) {
+    report = {
+      executiveSummary: report,
+    };
+  }
+}
+
+// Extract Final Recommendation if AI embedded it inside Executive Summary
+if (
+  report.executiveSummary &&
+  !report.finalRecommendation &&
+  report.executiveSummary.includes("Final recommendation:")
+) {
+  const parts = report.executiveSummary.split("Final recommendation:");
+
+  report.executiveSummary = parts[0].trim();
+
+  report.finalRecommendation = parts[1].trim();
+}
 
     return res.json({
       success: true,
