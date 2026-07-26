@@ -662,3 +662,40 @@
     grid-template-columns: 1fr;
   }
 }
+/* ==========================================
+   DOWNLOAD AI REPORT BUTTON
+========================================== */
+
+.download-btn {
+  display: block;
+  margin: 40px auto 20px;
+  padding: 16px 36px;
+
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: #ffffff;
+
+  border: none;
+  border-radius: 14px;
+
+  font-size: 18px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
+
+  transition: all 0.3s ease;
+}
+
+.download-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 35px rgba(37, 99, 235, 0.35);
+}
+
+.download-btn:active {
+  transform: scale(0.98);
+}
+
+.download-btn::before {
+  content: "📄 ";
+}
