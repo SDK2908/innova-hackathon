@@ -1,6 +1,6 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import "../styles/downloadReport.css";
+import "../styles/dashboard.css";
 
 function DownloadReport({
   dashboardData,
