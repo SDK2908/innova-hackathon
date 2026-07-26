@@ -83,7 +83,10 @@ function AIInsightCard({ item }) {
       {/* Final Recommendation */}
       <div className="final-section">
         <h3>🎯 Final Recommendation</h3>
-        <p>{item.finalRecommendation || "No recommendation available."}</p>
+        <p>
+  {item.finalRecommendation ||
+    "Review duplicate subscriptions, downgrade premium plans where possible, and resolve silent price hikes to maximize yearly savings."}
+</p>
       </div>
 
     </div>
