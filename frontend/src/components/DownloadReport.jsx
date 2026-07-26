@@ -284,12 +284,14 @@ function DownloadReport({
   };
 
   return (
-    <button
-      className="download-btn"
-      onClick={downloadPDF}
-    >
-      📄 Download AI Report
-    </button>
+    <div className="download-wrapper">
+      <button
+        className="download-btn"
+        onClick={downloadPDF}
+      >
+        📄 Download AI Report
+      </button>
+    </div>
   );
 }
 

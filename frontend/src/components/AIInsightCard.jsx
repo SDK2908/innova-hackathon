@@ -29,16 +29,13 @@ function AIInsightCard({ item }) {
         <div className="issues-section">
           <h3>⚠ Top Issues</h3>
 
-          {item.topIssues && item.topIssues.length > 0 ? (
+          {item.topIssues?.length ? (
             <ul>
               {item.topIssues.map((issue, index) => (
                 <li key={index}>
                   {typeof issue === "string"
                     ? issue
-                    : issue.issue ||
-                      issue.title ||
-                      issue.description ||
-                      JSON.stringify(issue)}
+                    : issue.issue || JSON.stringify(issue)}
                 </li>
               ))}
             </ul>
@@ -51,7 +48,7 @@ function AIInsightCard({ item }) {
         <div className="recommendations-section">
           <h3>✅ Recommendations</h3>
 
-          {item.recommendations && item.recommendations.length > 0 ? (
+          {item.recommendations?.length ? (
             <ul>
               {item.recommendations.map((rec, index) => (
                 <li key={index}>
@@ -60,6 +57,24 @@ function AIInsightCard({ item }) {
                   ) : (
                     <>
                       <strong>{rec.action}</strong>
+
+                      {rec.reason && (
+                        <>
+                          <br />
+                          <span>
+                            <b>Reason:</b> {rec.reason}
+                          </span>
+                        </>
+                      )}
+
+                      {rec.priority && (
+                        <>
+                          <br />
+                          <span>
+                            <b>Priority:</b> {rec.priority}
+                          </span>
+                        </>
+                      )}
 
                       {rec.estimatedYearlySavings !== undefined && (
                         <>
@@ -83,14 +98,11 @@ function AIInsightCard({ item }) {
       {/* Final Recommendation */}
       <div className="final-section">
         <h3>🎯 Final Recommendation</h3>
-<p>
-  {item.finalRecommendation ||
-    item.conclusion ||
-    item.summary ||
-    item.overallRecommendation ||
-    item.recommendation ||
-    "Review duplicate subscriptions, downgrade premium plans where possible, and resolve silent price hikes to maximize yearly savings."}
-</p>
+
+        <p>
+          {item.finalRecommendation ||
+            "Review duplicate subscriptions, downgrade expensive plans where possible, and enable renewal reminders to maximize savings."}
+        </p>
       </div>
 
     </div>

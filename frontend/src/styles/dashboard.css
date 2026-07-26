@@ -665,14 +665,16 @@
 /* ==========================================
    DOWNLOAD AI REPORT BUTTON
 ========================================== */
-
 .download-btn {
-  display: block;
-  margin: 40px auto 20px;
-  padding: 16px 36px;
+  width: 340px;
+  height: 60px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   background: linear-gradient(135deg, #2563eb, #7c3aed);
-  color: #ffffff;
+  color: #fff;
 
   border: none;
   border-radius: 14px;
@@ -682,20 +684,12 @@
 
   cursor: pointer;
 
-  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.3);
 
   transition: all 0.3s ease;
 }
 
 .download-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 16px 35px rgba(37, 99, 235, 0.35);
-}
-
-.download-btn:active {
-  transform: scale(0.98);
-}
-
-.download-btn::before {
-  content: "📄 ";
+  box-shadow: 0 18px 35px rgba(37, 99, 235, 0.35);
 }
