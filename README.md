@@ -3,10 +3,6 @@
 
 <p align="center">
 
-🏆 **INNOVA HACK 2026**
-
-**Team: Tech Nova**
-
 **"Empowering users to eliminate hidden subscription leaks and make smarter financial decisions through AI-powered intelligence."**
 
 </p>
@@ -542,19 +538,9 @@ By combining modern web technologies with a specialized AI multi-agent architect
 
 ---
 
-# 👥 Team
-
-### 🏆 Team Name
-
-**Tech Nova**
-
-Developed for **INNOVA HACK 2026**
-
----
-
 # 📄 License
 
-This project was developed for educational purposes as part of **INNOVA HACK 2026**.
+This project was developed for educational purposes.
 
 ---
 
